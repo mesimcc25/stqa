@@ -1,0 +1,37 @@
+test_cases_data = [
+    ["TC-REG-001", "Register with valid details", "Name: Rahul Kumar; Email: rahul.kumar@example.com; All other fields valid",
+     "Registration succeeds; confirmation message shown; user record created in DB; user can proceed to booking", "", ""],
+
+    ["TC-REG-002", "Register with invalid email format", "Email: rahul.kumar@com; Other fields valid",
+     "Registration blocked; inline validation message: 'Enter a valid email address' and no DB record created", "", ""],
+
+    ["TC-REG-003", "Attempt duplicate registration", "Email: rahul.kumar@example.com (already registered)",
+     "System prevents duplicate; message: 'Email already registered' and prompts login or password recovery", "", ""],
+
+    ["TC-BK-001", "View available date/time slots", "Candidate logged in",
+     "Available slots list displayed with date, start-time, end-time and seat availability", "", ""],
+
+    ["TC-BK-002", "Book a single available slot", "Slot: 2025-12-01 10:00–12:00; Candidate logged in",
+     "Booking confirmed; booking record created; slot availability decremented; confirmation shown", "", ""],
+
+    ["TC-BK-003", "Concurrent booking of last slot (race condition)", "Two users attempt to book same final slot simultaneously",
+     "Only one booking succeeds; other user receives 'Slot unavailable' or 'Slot full'; no duplicate reservation", "", ""],
+
+    ["TC-SUB-001", "Select subject after booking", "Subject list: Math, Physics, CS; Candidate selects Physics",
+     "Selected subject stored in candidate profile and shown in booking/confirmation", "", ""],
+
+    ["TC-EMAIL-001", "Verify credential email after booking", "Emailed address: rahul.kumar@example.com",
+     "System generates userID & password and sends email; mail-catcher/SMTP shows email with correct content and login link", "", ""],
+
+    ["TC-AUTH-001", "Login with correct credentials at scheduled time", "userID: rahulk123; Password from email; Time: scheduled slot start",
+     "Login successful; candidate can access exam dashboard at/after scheduled start; session established", "", ""],
+
+    ["TC-AUTH-002", "Login attempt before scheduled time", "Valid credentials; Time: 30 minutes before start",
+     "Login blocked or access to exam disabled; message: 'Exam starts at <server-time>'", "", ""],
+
+    ["TC-EXAM-001", "Take exam and manual submit before time expiry", "Preloaded 20 MCQs; candidate selects answers and clicks Submit at T-5",
+     "Answers accepted; scoring engine calculates marks correctly; result page shows marks, time taken and summary", "", ""],
+
+    ["TC-EXAM-002", "Timer auto-submit on time expiry and handle network disconnect", "Candidate started exam; network disconnect at T-2 mins then reconnects; exam time expires",
+     "Client autosaves answers locally; server authoritative timer auto-submits at expiry; final score computed & displayed; result saved in DB", "", ""]
+]
