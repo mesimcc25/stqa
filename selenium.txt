@@ -1,0 +1,888 @@
+action.py----
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://imcc.mespune.in/")
+
+program_menu = driver.find_element(By.XPATH,"//li[@id='menu-item-4383']")
+
+actions = ActionChains(driver)
+actions.move_to_element(program_menu).perform()
+
+time.sleep(5)
+
+# What's it doing:
+# Browser opens IMCC site.
+# Finds the Program menu item (id="menu-item-4383").
+# Performs hover using move_to_element().
+# Keeps it open for 5 sec so you can see the dropdown.
+-------------------------------------------------------------------------------------------------
+action1.py----
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+driver = webdriver.Chrome()
+driver.set_page_load_timeout(20)
+driver.maximize_window()
+
+driver.get("https://imcc.mespune.in/")
+wait = WebDriverWait(driver, 15)
+actions = ActionChains(driver)
+
+header = wait.until(
+    EC.presence_of_element_located((By.XPATH,"//h2[contains(normalize-space(.),'Prominent Recruiters')]"))
+)
+logos = wait.until(
+    EC.presence_of_all_elements_located((By.XPATH,"//h2[contains(normalize-space(.),'Prominent Recruiters')]/following::img"))
+)
+print("Total logos found: ", len(logos))
+
+if len(logos)>=3:
+    third_logo = wait.until(EC.visibility_of(logos[2])) #index 2 => 3rd logo
+    time.sleep(2)
+    actions.click_and_hold(third_logo).move_by_offset(-100,0).release().perform()
+    #alternatively:actions.drag_and_drop_by_offset(thrid_logo,-100,0).perform()
+
+    print("Dragged 3rd logo 100px to the left.")
+    time.sleep(2)
+else:
+    print("Less than 3 logos found")
+driver.quit()
+-------------------------------------------------------------------------------------------------
+action1c.py----
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+# Launch browser
+driver = webdriver.Chrome()
+driver.set_page_load_timeout(20)
+driver.maximize_window()
+
+driver.get("https://imcc.mespune.in/")
+wait = WebDriverWait(driver, 15)
+actions = ActionChains(driver)
+
+# Locate "Prominent Recruiters" header
+header = wait.until(
+    EC.presence_of_element_located(
+        (By.XPATH, "//h2[contains(normalize-space(.),'Prominent Recruiters')]")
+    )
+)
+
+# Count logos
+logos = driver.find_elements(
+    By.XPATH, "//h2[contains(normalize-space(.),'Prominent Recruiters')]/following::img"
+)
+print("Total logos found:", len(logos))
+
+if len(logos) >= 3:
+    # Always re-fetch the 3rd logo fresh (avoids stale element reference)
+    third_logo = wait.until(
+        EC.visibility_of_element_located(
+            (By.XPATH, "(//h2[contains(normalize-space(.),'Prominent Recruiters')]/following::img)[3]")
+        )
+    )
+
+    time.sleep(2)
+
+    # Drag the 3rd logo 100px to the left
+    actions.click_and_hold(third_logo).move_by_offset(-100, 0).release().perform()
+    # OR:
+    # actions.drag_and_drop_by_offset(third_logo, -100, 0).perform()
+
+    print("Dragged 3rd logo 100px to the left.")
+    time.sleep(2)
+else:
+    print("Less than 3 logos found")
+
+driver.quit()
+
+-------------------------------------------------------------------------------------------------
+alert.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://the-internet.herokuapp.com/javascript_alerts")
+
+confirm_button = driver.find_element(By.XPATH,"//button[text()='Click for JS Confirm']")
+confirm_button.click()
+time.sleep(3)
+
+alert = driver.switch_to.alert
+
+print("Alert text: ", alert.text)
+alert.accept()
+
+result = driver.find_element(By.ID,"result")
+print("Page result after accepting alert: ", result.text)
+time.sleep(3)
+
+
+driver.quit()
+-------------------------------------------------------------------------------------------------
+alert.py
+
+from selenium import webdriver
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://the-internet.herokuapp.com/javascript_alerts")
+
+# Click button to trigger alert
+driver.find_element("xpath", "//button[text()='Click for JS Alert']").click()
+time.sleep(3)
+
+# Switch to alert
+alert = driver.switch_to.alert
+print("Alert text:", alert.text)
+
+# Accept the alert
+alert.accept()
+
+time.sleep(3)
+driver.quit()
+
+
+-------------------------------------------------------------------------------------------------
+check.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("http://the-internet.herokuapp.com/checkboxes")
+
+checkbox1 = driver.find_element(By.XPATH,"//form[@id='checkboxes']/input[1]")
+checkbox2 = driver.find_element(By.XPATH,"//form[@id='checkboxes']/input[2]")
+
+checkbox1.click()
+time.sleep(5)
+checkbox1.click()
+time.sleep(5)
+checkbox2.click()
+time.sleep(5)
+checkbox2.click()
+time.sleep(5)
+-------------------------------------------------------------------------------------------------
+check1.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("http://the-internet.herokuapp.com/checkboxes")
+
+checkbox1 = driver.find_element(By.XPATH,"//form[@id='checkboxes']/input[1]")
+checkbox2 = driver.find_element(By.XPATH,"//form[@id='checkboxes']/input[2]")
+
+time.sleep(5)
+if not checkbox1.is_selected():
+    checkbox1.click()
+time.sleep(5)
+if checkbox1.is_selected():
+    checkbox1.click()
+# time.sleep(5)
+# checkbox2.click()
+# time.sleep(5)
+# checkbox2.click()
+# time.sleep(5)
+-------------------------------------------------------------------------------------------------
+dropdown.py
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+
+driver = webdriver.Chrome()
+driver.get("https://the-internet.herokuapp.com/dropdown")
+
+# locate dropdown
+mydropdown = driver.find_element(By.ID, "dropdown")
+dropdown = Select(mydropdown)
+
+# select by visible text
+dropdown.select_by_visible_text("Option 1")
+time.sleep(2)
+print(f"Selected option: {dropdown.first_selected_option.text}")
+
+# select by value
+dropdown.select_by_value("2")
+time.sleep(2)
+print(f"Selected option: {dropdown.first_selected_option.text}")
+
+# select by index (2 → Option 2)
+dropdown.select_by_index(2)
+time.sleep(2)
+print(f"Selected option: {dropdown.first_selected_option.text}")
+
+
+
+-------------------------------------------------------------------------------------------------
+dropdown1.py
+
+
+#MULTI-SELECT DROPDOWN
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+
+driver = webdriver.Chrome()
+driver.get("http://demoqa.com/select-menu")
+multi_select_element = driver.find_element(By.ID,"cars")
+multi_select = Select(multi_select_element)
+
+multi_select.select_by_visible_text("Volvo")
+multi_select.deselect_by_visible_text("Volvo")
+
+multi_select.select_by_index(1)
+multi_select.select_by_value("audi")
+
+all_selected_opt_list = multi_select.all_selected_options
+for opt in all_selected_opt_list:
+    print(opt.text)
+
+multi_select.deselect_by_index(0)
+multi_select.deselect_by_value("audi")
+multi_select.deselect_all()
+-------------------------------------------------------------------------------------------------
+frame.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://the-internet.herokuapp.com/iframe")
+
+# Switch into iframe
+driver.switch_to.frame("mce_0_ifr")
+print("Switched to iframe")
+
+iframe_body = driver.find_element(By.TAG_NAME, "body")
+iframe_body.send_keys("India")
+
+time.sleep(5)
+
+driver.switch_to.default_content()
+
+main_header = driver.find_element(By.TAG_NAME, "h3")
+print("Main Document Header: ", main_header.text)
+
+time.sleep(5)
+
+driver.quit()
+-------------------------------------------------------------------------------------------------
+frame1.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://the-internet.herokuapp.com/nested_frames")
+
+driver.switch_to.frame("frame-top") #Switch to top frame (main frame)
+print("Switch to top frame")
+
+driver.switch_to.frame("frame-left") #Switch to left frame within top frame
+print("Switch to left frame")
+
+left_frame = driver.find_element(By.TAG_NAME, "body")
+print("Left Frame Text: ", left_frame.text) #get text from the left frame
+
+driver.switch_to.parent_frame()#Switch back to the top frame
+print("Switched back to top frame")
+
+driver.switch_to.frame("frame-middle") #Switch to middle frame within top frame
+print("Switch to middle frame")
+
+middle_frame = driver.find_element(By.TAG_NAME, "body")
+print("Middle Frame Text: ", middle_frame.text) #get text from the middle frame
+
+driver.switch_to.parent_frame()#Switch back to the top frame
+print("Switched back to top frame")
+
+driver.switch_to.default_content()
+
+driver.switch_to.frame("frame-bottom") #Now switch to bottom frame
+bottom_frame = driver.find_element(By.TAG_NAME, "body")
+print("Bottom Frame Text: ", bottom_frame.text) # Get text from bottom frame
+
+driver.quit()
+
+
+-------------------------------------------------------------------------------------------------
+framem.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://the-internet.herokuapp.com/nested_frames")
+
+# ---- TOP → LEFT ----
+driver.switch_to.frame("frame-top")   # switch to top frame
+print("Switched to top frame")
+
+driver.switch_to.frame("frame-left")  # inside left frame
+print("Switched to left frame")
+left_frame = driver.find_element(By.TAG_NAME, "body")
+print("Left Frame Text:", left_frame.text)
+
+driver.switch_to.parent_frame()       # back to top
+print("Back to top frame")
+
+# ---- TOP → MIDDLE ----
+driver.switch_to.frame("frame-middle")
+print("Switched to middle frame")
+middle_frame = driver.find_element(By.ID, "content")
+print("Middle Frame Text:", middle_frame.text)
+
+driver.switch_to.parent_frame()       # back to top
+print("Back to top frame")
+
+# ---- TOP → RIGHT ----
+driver.switch_to.frame("frame-right")
+print("Switched to right frame")
+right_frame = driver.find_element(By.TAG_NAME, "body")
+print("Right Frame Text:", right_frame.text)
+
+# Back to root (default content)
+driver.switch_to.default_content()
+print("Back to main document")
+
+# ---- BOTTOM ----
+driver.switch_to.frame("frame-bottom")
+print("Switched to bottom frame")
+bottom_frame = driver.find_element(By.TAG_NAME, "body")
+print("Bottom Frame Text:", bottom_frame.text)
+
+time.sleep(5)
+driver.quit()
+
+-------------------------------------------------------------------------------------------------
+main.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+# 1. Initialize Chrome browser (with parentheses)
+driver = webdriver.Chrome()
+
+# 2. Open Google
+driver.get("https://www.google.com/")
+
+# 3. Print the page title
+print("Page title:", driver.title)
+
+# 4. Maximize window
+driver.maximize_window()
+
+# 5. Find element by ID (example: search box has ID 'APjFqb')
+search_box = driver.find_element(By.ID, "APjFqb")
+print("Search box element:", search_box)
+
+#Using Webelement Locator for XPATH
+search_txtbox = driver.find_element(By.XPATH,"//textarea")
+search_txtbox.send_keys('The Batman')
+#search_txtbox.clear()
+search_txtbox.send_keys(Keys.ENTER)
+
+input("hhh")
+-------------------------------------------------------------------------------------------------
+main1.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+# 1. Initialize Chrome browser (with parentheses)
+driver = webdriver.Chrome()
+
+# 2. Open Google
+driver.get("https://www.google.com/")
+
+# 3. Print the page title
+print("Page title:", driver.title)
+
+# 4. Maximize window
+driver.maximize_window()
+
+# 5. Find element by ID (example: search box has ID 'APjFqb')
+search_box = driver.find_element(By.ID, "APjFqb")
+print("Search box element:", search_box)
+
+#Using Webelement Locator for XPATH
+search_txtbox = driver.find_element(By.XPATH,"//textarea[@name='q']")
+search_txtbox.send_keys('The Batman')
+search_txtbox.clear()
+search_txtbox.send_keys(Keys.ENTER)
+
+input("hhh")
+-------------------------------------------------------------------------------------------------
+main2.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+# 1. Initialize Chrome browser (with parentheses)
+driver = webdriver.Chrome()
+
+# 2. Open Google
+driver.get("https://www.google.com/")
+
+single_search_txtbox = driver.find_element(By.XPATH,"//textarea")
+
+multi_search_txtbox = driver.find_elements(By.XPATH,"//textarea")
+
+# print(type(single_search_txtbox))
+# print(type(multi_search_txtbox))
+
+# Output:
+# DevTools listening on ws://127.0.0.1:51218/devtools/browser/d05b8d81-db8b-4ecb-8230-c0cd86082b19
+# <class 'selenium.webdriver.remote.webelement.WebElement'>
+# <class 'list'>
+
+# print("first: ", single_search_txtbox)
+# print("second: ", multi_search_txtbox)
+
+multi_search_txtbox.send_keys('The Batman')
+multi_search_txtbox.send_keys(Keys.ENTER)
+
+input("Enter something to end program: ")
+
+# Output:
+# py main2.py
+
+# DevTools listening on ws://127.0.0.1:60471/devtools/browser/a5d4f296-8352-4593-bcbc-c6efdd072ca3
+# Traceback (most recent call last):
+#   File "D:\Selenium\main2.py", line 26, in <module>
+#     multi_search_txtbox.send_keys('The Batman')
+#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# AttributeError: 'list' object has no attribute 'send_keys'
+
+-------------------------------------------------------------------------------------------------
+main2c.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+# 1. Initialize Chrome browser
+driver = webdriver.Chrome()
+
+# 2. Open Google
+driver.get("https://www.google.com/")
+
+# Find single and multiple textareas
+single_search_txtbox = driver.find_element(By.XPATH, "//textarea")
+multi_search_txtbox = driver.find_elements(By.XPATH, "//textarea")
+
+# Use the first element from the list
+search_box = multi_search_txtbox[0]
+
+# Type search text and press Enter
+search_box.send_keys("The Batman")
+search_box.send_keys(Keys.ENTER)
+
+input("Enter something to end program: ")
+
+-------------------------------------------------------------------------------------------------
+main3.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+# 1. Initialize Chrome browser
+driver = webdriver.Chrome()
+
+# 2. Open Google
+driver.get("https://www.google.com/")
+
+# Find single and multiple textareas
+single_search_txtbox = driver.find_element(By.XPATH, "//textarea")
+multi_search_txtbox = driver.find_elements(By.XPATH, "//textarea")
+
+# Use the first element from the list
+search_box = multi_search_txtbox[0]
+
+# Type search text and press Enter
+search_box.send_keys("The Batman")
+search_box.send_keys(Keys.ENTER)
+
+input("Enter something to end program: ")
+
+-------------------------------------------------------------------------------------------------
+mainnav.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+# 1. Initialize Chrome browser (with parentheses)
+driver = webdriver.Chrome()
+
+# 2. Open Google
+driver.get("https://www.google.com/")
+driver.get("https://monkeytype.com/")
+driver.maximize_window()
+
+driver.refresh()
+input("Enter to Backward")
+driver.back()
+input("Enter to go foward")
+driver.forward()
+
+#Using Webelement Locator for XPATH
+search_txtbox = driver.find_element(By.XPATH,"//textarea[@name='q']")
+search_txtbox.send_keys('The Batman')
+search_txtbox.send_keys(Keys.ENTER)
+
+search_txtbox.send_keys('m')
+
+input("hhh")
+-------------------------------------------------------------------------------------------------
+
+mainnav2.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+driver = webdriver.Chrome()
+
+driver.get("https://monkeytype.com/")
+driver.maximize_window()
+
+current_url = driver.current_url
+print("Current page URL: ", current_url)
+
+current_title = driver.title
+print("Current page Title: ", current_title)
+
+current_page_source = driver.page_source
+print("Current Page Source: ", current_page_source)
+
+-------------------------------------------------------------------------------------------------
+miscellaneous.py
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://www.google.com/")
+
+driver.save_screenshot('arnav.png') #Takes a full page screenshot and saves in root
+
+google_logo = driver.find_element(By.XPATH,"//div[@class='k1zIA rSk4se']//*[name()='svg']")
+google_logo.screenshot("img_logo.png")
+
+driver.maximize_window()  # Maximizes the current window
+time.sleep(3)
+
+driver.minimize_window()  # Minimizes the current window
+time.sleep(3)
+
+driver.fullscreen_window()  # Sets the current window to fullscreen
+time.sleep(3)
+
+# Get current window position
+window_position = driver.get_window_position()
+print("Window Position: ", window_position)
+
+# Set window position
+driver.set_window_position(200, 100)
+time.sleep(3)
+
+# Get current window size
+window_size = driver.get_window_size()
+print("Window Size: ", window_size)
+
+# Set window size
+driver.set_window_size(1024, 768)
+time.sleep(3)
+
+driver.quit()
+
+-------------------------------------------------------------------------------------------------
+practice.py
+
+
+"""
+This script automates the process of opening Facebook, 
+clicking the 'Create new account' button, and filling out 
+the sign-up form using Selenium WebDriver in Python.
+
+Steps performed:
+1. Launches Chrome browser and navigates to Facebook.
+2. Waits until the 'Create new account' button is clickable and clicks it.
+3. Fills out the registration form fields:
+   - First name
+   - Surname
+   - Mobile number or email
+   - Password
+   - Date of birth (day, month, year)
+   - Gender (Male in this example)
+4. Submits the form by clicking the 'Sign Up' button.
+5. Waits for 10 seconds before closing the browser.
+
+Note:
+- Dummy data is used for demonstration purposes.
+- Some fields (like 'Re-enter email') may appear dynamically 
+  and should be handled with explicit waits if needed.
+- This script is for practice/learning only; 
+  Facebook may block automated sign-ups using real information.
+"""
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://www.fb.com/")
+driver.maximize_window()
+
+wait = WebDriverWait(driver, 15)
+
+# Step 1: Click "Create new account"
+create_new_account = wait.until(
+    EC.element_to_be_clickable((By.XPATH, '//a[@data-testid="open-registration-form-button"]'))
+)
+create_new_account.click()
+
+# Step 2: Fill form fields
+first_name = wait.until(EC.presence_of_element_located((By.NAME, "firstname")))
+first_name.send_keys("Arnav")
+
+last_name = driver.find_element(By.NAME, "lastname")
+last_name.send_keys("Chandure")
+
+email = driver.find_element(By.NAME, "reg_email__")
+email.send_keys("arnav123@example.com")
+
+password = driver.find_element(By.NAME, "reg_passwd__")
+password.send_keys("StrongPassword123")
+
+# Step 3: Select date of birth
+Select(driver.find_element(By.NAME, "birthday_day")).select_by_visible_text("16")
+Select(driver.find_element(By.NAME, "birthday_month")).select_by_visible_text("Sep")
+Select(driver.find_element(By.NAME, "birthday_year")).select_by_visible_text("2000")
+
+# Step 4: Select gender (Male)
+gender = driver.find_element(By.XPATH, '//input[@name="sex" and @value="2"]')
+gender.click()
+
+# Step 5: Click Sign Up
+signup_btn = driver.find_element(By.NAME, "websubmit")
+signup_btn.click()
+
+time.sleep(10)
+driver.quit()
+
+-------------------------------------------------------------------------------------------------
+radio.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+# 1. Initialize Chrome browser
+driver = webdriver.Chrome()
+
+# 2. Open Facebook
+driver.get("https://www.fb.com/")
+
+# 3. Wait until "Create new account" button is clickable
+wait = WebDriverWait(driver, 15)
+create_new_account = wait.until(
+    EC.element_to_be_clickable((By.XPATH, '//a[@data-testid="open-registration-form-button"]'))
+)
+
+time.sleep(5)
+
+# 4. Click the button
+create_new_account.click()
+
+time.sleep(10)  # Just to keep the window open so you can see the result
+driver.quit()
+
+
+-------------------------------------------------------------------------------------------------
+value.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+driver = webdriver.Chrome()
+driver.get("https://www.google.com")
+search_box = driver.find_element(By.NAME,"q")
+
+print("maxlenght: ", search_box.get_attribute("maxlength"))
+print("id: ", search_box.get_attribute("id"))
+
+print("value(before typing): "), search_box.get_attribute("value")
+search_box.send_keys("IMCC")
+print("value(after typing): ", search_box.get_attribute("value"))
+
+driver.quit()
+
+-------------------------------------------------------------------------------------------------
+wait.py
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+driver = webdriver.Chrome()
+driver.get("http://www.google.com")
+
+# Implicit Wait
+driver.implicitly_wait(10)
+search_box = driver.find_element(By.NAME,"q")
+search_box.send_keys("Pune")
+
+# Explicit Wait
+wait = WebDriverWait(driver, 15)
+search_box_explicit = wait.until(
+    EC.presence_of_element_located((By.NAME, "q"))
+)
+search_box_explicit.send_keys(" Maharashtra")
+
+# Fluent Wait
+polling_wait = WebDriverWait(driver, 20, poll_frequency=3, ignored_exceptions=[Exception])
+search_box_polling = polling_wait.until(
+    EC.visibility_of_element_located((By.NAME,"q"))
+)
+search_box_polling.send_keys(" India")
+
+
+
+driver.quit()
+
+-------------------------------------------------------------------------------------------------
+
+window.py
+
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+driver = webdriver.Chrome()
+driver.get("https://www.facebook.com")
+wait = WebDriverWait(driver,10)
+
+original_window = driver.current_window_handle
+
+driver.switch_to.new_window('window')
+wait.until(EC.number_of_windows_to_be(2))
+
+driver.execute_script("window.open('https://www.google.com/')")
+wait.until(EC.number_of_windows_to_be(3))
+
+all_windows = driver.window_handles
+for window in all_windows:
+    if window != original_window:
+        driver.switch_to.window(window)
+        break
+
+driver.quit()
+
+#Homework: Try with two different drivers
+
+-------------------------------------------------------------------------------------------------
+window.py
+
+import time
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+# Launch Chrome
+driver = webdriver.Chrome()
+wait = WebDriverWait(driver, 10)
+
+# Open Facebook in the first window
+driver.get("https://www.facebook.com")
+print("Opened Facebook")
+time.sleep(3)
+
+# Store the original window handle
+original_window = driver.current_window_handle
+print(">>> Original window handle:", original_window, type(original_window))
+
+# Open a new browser window
+driver.switch_to.new_window('window')
+wait.until(EC.number_of_windows_to_be(2))
+print("Opened a new blank window")
+time.sleep(3)
+
+# Open Google in a new tab using JavaScript
+driver.execute_script("window.open('https://www.google.com/')")
+wait.until(EC.number_of_windows_to_be(3))
+print("Opened Google in a new tab")
+time.sleep(3)
+
+# Get all window handles
+all_windows = driver.window_handles
+print(">>> All window handles:", all_windows, type(all_windows))
+
+# Switch to the first non-original window
+for window in all_windows:
+    if window != original_window:
+        driver.switch_to.window(window)
+        print("Switched to window/tab:", driver.title)
+        time.sleep(3)
+        break
+
+# Keep everything open for a bit
+print("Pausing for you to observe the windows...")
+time.sleep(10)
+
+# Close all windows and quit session
+driver.quit()
+print("Closed all windows and ended session")
+
+-------------------------------------------------------------------------------------------------
+
+
+
