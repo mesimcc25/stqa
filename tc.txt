@@ -1,0 +1,61 @@
+test_plan_data = [
+    ["TP001", "Test Plan Identifier",
+     "TP-OREA-001",
+     "Test Plan for Online Registration & Examination Application documented successfully", "", ""],
+
+    ["TP002", "References",
+     "SRS, IEEE 829 Standard, System Design Document, UI Wireframes, Email Config Docs, DB Schema",
+     "All reference documents should be listed clearly and completely", "", ""],
+
+    ["TP003", "Introduction",
+     "System features: Registration, Slot Booking, Subject Selection, Email Credentials, Login, MCQ Exam, Result Display",
+     "Introduction should describe testing scope, objectives, and system overview clearly", "", ""],
+
+    ["TP004", "Features to be Tested – Registration Module",
+     "Valid email check, Duplicate email check",
+     "All registration functions should be testable and behave as expected", "", ""],
+
+    ["TP005", "Features to be Tested – Slot Booking",
+     "Display available slots, Book slot, Prevent double booking",
+     "Slot booking features should function correctly under all conditions", "", ""],
+
+    ["TP006", "Features to be Tested – Subject Selection",
+     "Display subjects list, Save selected subject",
+     "Subject should be stored correctly and linked to candidate profile", "", ""],
+
+    ["TP007", "Features to be Tested – Credential Email",
+     "UserID & Password generation, Email delivery",
+     "Email should be sent with correct credentials after booking", "", ""],
+
+    ["TP008", "Features to be Tested – Login Module",
+     "Scheduled time login allowed, Invalid login blocked",
+     "Login logic should allow only valid and scheduled access", "", ""],
+
+    ["TP009", "Features to be Tested – Examination Module",
+     "MCQ display, Answer selection, Timer, Navigation, Auto-submit",
+     "Exam should run smoothly, save answers, enforce timer, and auto-submit", "", ""],
+
+    ["TP010", "Features to be Tested – Scoring & Result",
+     "Score calculation, Result display",
+     "Marks should be calculated correctly and displayed immediately", "", ""],
+
+    ["TP011", "Approach",
+     "Functional, Positive/Negative, Integration Testing, System Testing, Performance Testing, Security Testing",
+     "Testing approach should verify all functional and non-functional requirements", "", ""],
+
+    ["TP012", "Environmental Needs",
+     "Hardware, Browsers, Mail server, Test DB, Network, Sample MCQs",
+     "Environment must support full testing of registration, booking, email, exam & results", "", ""],
+
+    ["TP013", "Staffing & Training Needs",
+     "Test Lead, Test Engineers, Optional Automation/Performance Tester; Training on workflows & timer logic",
+     "Team should be trained and roles defined clearly for execution", "", ""],
+
+    ["TP014", "Responsibilities",
+     "Test Lead, Test Engineers, Developers, Product Owner",
+     "All roles should be responsible for planned testing activities", "", ""],
+
+    ["TP015", "Schedule",
+     "Planning 2 days, Test Case Design 3 days, Setup 1 day, Functional 5 days, System 3 days, Performance/Security 2 days, Retest 3 days, Approval 1 day",
+     "Testing should complete within ~19 days as per schedule", "", ""]
+]
